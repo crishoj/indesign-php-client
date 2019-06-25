@@ -1,8 +1,9 @@
 {
     "name": "davidnjuko/indesign-client",
-    "description": "Indesign Server PHP Client",
+    "description": "InDesign Server PHP Client",
     "keywords": [
-        "client"
+        "client",
+        "indesign"
     ],
     "homepage": "http://davidribes.fr",
     "type": "library",
