@@ -1,7 +1,7 @@
-InDesignClient
-=================
+PHP Client for InDesign Server
+==============================
 
-Dependencies  must be installed using composer. In order to run unit test you need to have an indesign server instance runing
+Dependencies  must be installed using composer. In order to run unit test you need to have an InDesign Server instance runing.
 
 Contributing
 ------------
