@@ -9,4 +9,5 @@ Help is very welcomed, but code contributions must be done in respect of [PSR-2]
 
 Dependencies
 ------------
-\SoapClient (http://www.php.net/manual/fr/class.soapclient.php)
+- `ext-soap`
+
