@@ -5,22 +5,20 @@ namespace InDesignClient;
 class Application
 {
 
-    /** @var  Client $client */
+    /** @var Client $client */
     private $client;
 
-    function __construct($client)
+    function __construct(Client $client)
     {
         $this->client = $client;
     }
 
     /**
      * Get fonts installed on the server
-     * @return array
      */
-    public function getAllFonts()
+    public function getAllFonts(): array
     {
-        $script = 'app.fonts';
-        $return = $this->client->simpleRunScript($script);
+        $return = $this->client->simpleRunScript('app.fonts');
 
         $fonts = [];
 
@@ -33,56 +31,47 @@ class Application
 
     /**
      * Get server version
-     * @return string
      */
-    public function getVersion()
+    public function getVersion(): string
     {
-        $script = 'app.version';
-        $return = $this->client->simpleRunScript($script);
+        $return = $this->client->simpleRunScript('app.version');
 
         return (string) $return->data;
     }
 
     /**
      * Get the name of the application
-     * @return string
      */
-    public function getName()
+    public function getName(): string
     {
-        $script = 'app.name';
-        $return = $this->client->simpleRunScript($script);
+        $return = $this->client->simpleRunScript('app.name');
 
         return (string) $return->data;
     }
 
     /**
      * Get user serial number
-     * @return string
      */
-    public function getSerialNumber()
+    public function getSerialNumber(): string
     {
-        $script = 'app.serialNumber';
-        $return = $this->client->simpleRunScript($script);
+        $return = $this->client->simpleRunScript('app.serialNumber');
 
         return (string) $return->data;
     }
 
     /**
      * Get the user associated with the tracked changes and notes.
-     * @return string
      */
-    public function getUserName()
+    public function getUserName(): string
     {
-        $script = 'app.userName';
-        $return = $this->client->simpleRunScript($script);
+        $return = $this->client->simpleRunScript('app.userName');
 
         return (string) $return->data;
     }
 
-    public function setUserName($userName)
+    public function setUserName($userName): bool
     {
-        $script = 'app.userName = "' . $userName . '"';
-        $return = $this->client->simpleRunScript($script);
+        $return = $this->client->simpleRunScript('app.userName = "' . $userName . '"');
 
         return ($userName === $return->data);
     }

@@ -17,13 +17,13 @@ class Client extends SoapClient
 
     private $scriptLanguage = 'javascript';
 
-    private $port = '12345';
+    private $port = 12345;
     private $ip = '127.0.0.1';
 
     /** @var Application $application */
     private $application = null;
 
-    function __construct($wsdl = 'http://127.0.0.1:12345/service?wsdl')
+    function __construct(string $wsdl = 'http://127.0.0.1:12345/service?wsdl')
     {
         preg_match('/[0-9.]+/', $wsdl, $ipMatches);
         preg_match('/:[0-9]+/', $wsdl, $portMatches);
@@ -39,13 +39,10 @@ class Client extends SoapClient
     }
 
     /**
-     * @param       $script
-     * @param array $parameters
-     * @return array
      * @throws ApiCallException
      * @throws Exception\MalformedParametersException
      */
-    function simpleRunScript($script, $parameters = [])
+    function simpleRunScript(string $script, array $parameters = []): stdClass
     {
         return $this->doRunScript([
             'scriptText'        => $script,
@@ -55,32 +52,28 @@ class Client extends SoapClient
 
     /**
      * Call main function of Indesign Server API
-     * @param array $scriptParameters
-     * @return array
+     *
      * @throws ApiCallException
      * @throws Exception\MalformedParametersException
      */
-    function doRunScript(array $scriptParameters)
+    function doRunScript(array $scriptParameters): ?stdClass
     {
         if (! array_key_exists('scriptLanguage', $scriptParameters)) {
             $scriptParameters['scriptLanguage'] = $this->scriptLanguage;
         }
 
-        if ($this->validScriptParameters($scriptParameters)) {
-            $return = $this->RunScript(["runScriptParameters" => $scriptParameters]);
-            if (is_object($return)) {
-                return self::getReturnValues($return);
-            }
-        }
-        return null;
+        $this->assertValidScriptParameters($scriptParameters);
+
+        $return = $this->RunScript(["runScriptParameters" => $scriptParameters]);
+        return is_object($return)
+            ? self::getReturnValues($return)
+            : null;
     }
 
     /**
-     * @param $scriptParameters
-     * @return bool
      * @throws Exception\MalformedParametersException
      */
-    private function validScriptParameters($scriptParameters)
+    private function assertValidScriptParameters(array $scriptParameters)
     {
         if (! array_key_exists('scriptLanguage', $scriptParameters)) {
             throw new Exception\MalformedParametersException('scriptLanguage');
@@ -90,16 +83,12 @@ class Client extends SoapClient
                 $scriptParameters)) {
             throw new Exception\MalformedParametersException(['scriptText', 'scriptFile']);
         }
-
-        return true;
     }
 
     /**
-     * @param stdClass $obj
-     * @return array
      * @throws Exception\ApiCallException
      */
-    public static function getReturnValues(stdClass $obj)
+    public static function getReturnValues(stdClass $obj): stdClass
     {
         if ($obj->errorNumber == 0) {
             return $obj->scriptResult;
@@ -111,71 +100,44 @@ class Client extends SoapClient
         }
     }
 
-    /**
-     * @return string
-     */
-    public function getIp()
+    public function getIp(): string
     {
         return $this->ip;
     }
 
-    /**
-     * @param string $ip
-     * @return $this
-     */
-    public function setIp($ip)
+    public function setIp(string $ip): self
     {
         $this->ip = $ip;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getPort()
+    public function getPort(): int
     {
         return $this->port;
     }
 
-    /**
-     * @param string $port
-     * @return $this
-     */
-    public function setPort($port)
+    public function setPort(int $port): self
     {
         $this->port = $port;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getScriptLanguage()
+    public function getScriptLanguage(): string
     {
         return $this->scriptLanguage;
     }
 
-    /**
-     * @param string $scriptLanguage
-     * @return $this
-     */
-    public function setScriptLanguage($scriptLanguage)
+    public function setScriptLanguage(string $scriptLanguage): self
     {
         $this->scriptLanguage = $scriptLanguage;
         return $this;
     }
 
-    /**
-     * @return Application
-     */
-    public function getApplication()
+    public function getApplication(): Application
     {
-        if (is_object($this->application)) {
-            return $this->application;
-        }
-        $this->application = new Application($this);
-        return $this->application;
+        // Memoize
+        return $this->application
+            ?? $this->application = new Application($this);
     }
-
 
 }

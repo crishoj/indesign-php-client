@@ -49,6 +49,6 @@ class ApplicationTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->instance = new Application(new Client($this->wsdl()));
+        $this->instance = (new Client($this->wsdl()))->getApplication();
     }
 }

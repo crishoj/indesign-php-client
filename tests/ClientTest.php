@@ -18,9 +18,9 @@ class ClientTest extends TestCase
 
     public function testDefaultMethodCall()
     {
-        $this->assertEmpty((array) ($this->instance->doRunScript([
+        $this->assertEmpty((array) $this->instance->doRunScript([
             "scriptText" => '',
-        ])));
+        ]));
     }
 
     public function testMalformedExceptionIsThrown()
