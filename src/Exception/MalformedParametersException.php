@@ -4,7 +4,7 @@ namespace InDesignClient\Exception;
 
 use Exception;
 
-class MalformedParametersException extends \Exception
+class MalformedParametersException extends Exception
 {
     public function __construct($fields)
     {
@@ -14,7 +14,7 @@ class MalformedParametersException extends \Exception
             $field = $fields;
         }
 
-        $message = "Missing parameter: ".$field;
+        $message = "Missing parameter: " . $field;
         parent::__construct($message, 1);
     }
 

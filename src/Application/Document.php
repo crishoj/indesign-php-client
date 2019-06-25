@@ -2,6 +2,7 @@
 
 namespace InDesignClient\Application;
 
-class Document {
+class Document
+{
 
 }

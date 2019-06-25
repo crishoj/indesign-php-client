@@ -2,7 +2,8 @@
 
 namespace InDesignClient;
 
-class Application {
+class Application
+{
 
     /** @var  Client $client */
     private $client;
@@ -21,9 +22,9 @@ class Application {
         $script = 'app.fonts';
         $return = $this->client->simpleRunScript($script);
 
-        $fonts = array();
+        $fonts = [];
 
-        foreach ($return->data->item as $id=>$item) {
+        foreach ($return->data->item as $id => $item) {
             $fonts[$id] = $item->specifierData;
         }
 
@@ -39,19 +40,19 @@ class Application {
         $script = 'app.version';
         $return = $this->client->simpleRunScript($script);
 
-        return (string)$return->data;
+        return (string) $return->data;
     }
 
     /**
      * Get the name of the application
      * @return string
      */
-    public function  getName()
+    public function getName()
     {
         $script = 'app.name';
         $return = $this->client->simpleRunScript($script);
 
-        return (string)$return->data;
+        return (string) $return->data;
     }
 
     /**
@@ -63,7 +64,7 @@ class Application {
         $script = 'app.serialNumber';
         $return = $this->client->simpleRunScript($script);
 
-        return (string)$return->data;
+        return (string) $return->data;
     }
 
     /**
@@ -75,15 +76,15 @@ class Application {
         $script = 'app.userName';
         $return = $this->client->simpleRunScript($script);
 
-        return (string)$return->data;
+        return (string) $return->data;
     }
 
     public function setUserName($userName)
     {
-        $script = 'app.userName = "'.$userName.'"';
+        $script = 'app.userName = "' . $userName . '"';
         $return = $this->client->simpleRunScript($script);
 
-        return ($userName===$return->data);
+        return ($userName === $return->data);
     }
 
 }

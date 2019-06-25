@@ -3,6 +3,8 @@
 namespace InDesignClient;
 
 use InDesignClient\Exception\ApiCallException;
+use SoapClient;
+use stdClass;
 
 /**
  * Client
@@ -10,14 +12,15 @@ use InDesignClient\Exception\ApiCallException;
  * @package    IndesignClient
  * @author     david ribes <ribes.david@gmail.com>
  */
-class Client extends \SoapClient {
+class Client extends SoapClient
+{
 
     private $scriptLanguage = 'javascript';
 
     private $port = '12345';
     private $ip = '127.0.0.1';
 
-    /** @var \InDesignClient\Application $application */
+    /** @var Application $application */
     private $application = null;
 
     function __construct($wsdl = 'http://127.0.0.1:12345/service?wsdl')
@@ -26,28 +29,45 @@ class Client extends \SoapClient {
         preg_match('/:[0-9]+/', $wsdl, $portMatches);
 
         $this->setIp($ipMatches[0]);
-        $this->setPort(str_replace(":","",$portMatches[0]));
+        $this->setPort(str_replace(":", "", $portMatches[0]));
 
-        $this->SoapClient($wsdl, array(
+        $this->SoapClient($wsdl, [
             'compression' => SOAP_COMPRESSION_ACCEPT | SOAP_COMPRESSION_GZIP,
-            'proxy_port'  =>  $this->port,
-            'proxy_host'  =>  $ipMatches[0],
-        ));
+            'proxy_port'  => $this->port,
+            'proxy_host'  => $ipMatches[0],
+        ]);
+    }
+
+    /**
+     * @param       $script
+     * @param array $parameters
+     * @return array
+     * @throws ApiCallException
+     * @throws Exception\MalformedParametersException
+     */
+    function simpleRunScript($script, $parameters = [])
+    {
+        return $this->doRunScript([
+            'scriptText'        => $script,
+            'script_parameters' => $parameters
+        ]);
     }
 
     /**
      * Call main function of Indesign Server API
      * @param array $scriptParameters
      * @return array
+     * @throws ApiCallException
+     * @throws Exception\MalformedParametersException
      */
     function doRunScript(array $scriptParameters)
     {
-        if (!array_key_exists('scriptLanguage',$scriptParameters)) {
+        if (! array_key_exists('scriptLanguage', $scriptParameters)) {
             $scriptParameters['scriptLanguage'] = $this->scriptLanguage;
         }
 
         if ($this->validScriptParameters($scriptParameters)) {
-            $return = $this->RunScript(array("runScriptParameters" => $scriptParameters));
+            $return = $this->RunScript(["runScriptParameters" => $scriptParameters]);
             if (is_object($return)) {
                 return self::getReturnValues($return);
             }
@@ -56,24 +76,30 @@ class Client extends \SoapClient {
     }
 
     /**
-     * @param $script
-     * @param array $parameters
-     * @return array
+     * @param $scriptParameters
+     * @return bool
+     * @throws Exception\MalformedParametersException
      */
-    function simpleRunScript($script, $parameters = array())
+    private function validScriptParameters($scriptParameters)
     {
-        return $this->doRunScript(array(
-            'scriptText'    =>  $script,
-            'script_parameters' =>  $parameters
-        ));
+        if (! array_key_exists('scriptLanguage', $scriptParameters)) {
+            throw new Exception\MalformedParametersException('scriptLanguage');
+        }
+
+        if (! array_key_exists('scriptText', $scriptParameters) and ! array_key_exists('scriptFile',
+                $scriptParameters)) {
+            throw new Exception\MalformedParametersException(['scriptText', 'scriptFile']);
+        }
+
+        return true;
     }
 
     /**
-     * @param \stdClass $obj
-     * @throws Exception\ApiCallException
+     * @param stdClass $obj
      * @return array
+     * @throws Exception\ApiCallException
      */
-    public static function getReturnValues(\stdClass $obj)
+    public static function getReturnValues(stdClass $obj)
     {
         if ($obj->errorNumber == 0) {
             return $obj->scriptResult;
@@ -86,21 +112,11 @@ class Client extends \SoapClient {
     }
 
     /**
-     * @param $scriptParameters
-     * @return bool
-     * @throws Exception\MalformedParametersException
+     * @return string
      */
-    private function validScriptParameters($scriptParameters)
+    public function getIp()
     {
-        if (!array_key_exists('scriptLanguage',$scriptParameters)) {
-            throw new Exception\MalformedParametersException('scriptLanguage');
-        }
-
-        if (!array_key_exists('scriptText',$scriptParameters) and !array_key_exists('scriptFile',$scriptParameters)) {
-            throw new Exception\MalformedParametersException(array('scriptText', 'scriptFile'));
-        }
-
-        return true;
+        return $this->ip;
     }
 
     /**
@@ -116,9 +132,9 @@ class Client extends \SoapClient {
     /**
      * @return string
      */
-    public function getIp()
+    public function getPort()
     {
-        return $this->ip;
+        return $this->port;
     }
 
     /**
@@ -134,9 +150,9 @@ class Client extends \SoapClient {
     /**
      * @return string
      */
-    public function getPort()
+    public function getScriptLanguage()
     {
-        return $this->port;
+        return $this->scriptLanguage;
     }
 
     /**
@@ -150,29 +166,16 @@ class Client extends \SoapClient {
     }
 
     /**
-     * @return string
-     */
-    public function getScriptLanguage()
-    {
-        return $this->scriptLanguage;
-    }
-
-    /**
-     * @return \InDesignClient\Application
+     * @return Application
      */
     public function getApplication()
     {
-        if (is_object($this->application))
-        {
+        if (is_object($this->application)) {
             return $this->application;
         }
         $this->application = new Application($this);
         return $this->application;
     }
-
-
-
-
 
 
 }

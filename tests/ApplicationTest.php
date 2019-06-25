@@ -10,12 +10,6 @@ class ApplicationTest extends TestCase
     /** @var Application $instance */
     protected $instance;
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->instance = new Application(new Client($this->wsdl()));
-    }
-
     public function testGetAllFonts()
     {
         $fonts = $this->instance->getAllFonts();
@@ -50,5 +44,11 @@ class ApplicationTest extends TestCase
         $return = $this->instance->setUserName($name);
         $this->assertTrue($return);
         $this->assertEquals($name, $this->instance->getUserName());
+    }
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->instance = new Application(new Client($this->wsdl()));
     }
 }

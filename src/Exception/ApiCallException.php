@@ -2,7 +2,9 @@
 
 namespace InDesignClient\Exception;
 
-class ApiCallException extends \Exception
+use Exception;
+
+class ApiCallException extends Exception
 {
 
 }

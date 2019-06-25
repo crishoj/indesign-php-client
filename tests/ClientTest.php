@@ -11,12 +11,6 @@ class ClientTest extends TestCase
     /** @var Client $instance */
     protected $instance;
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->instance = new Client($this->wsdl());
-    }
-
     public function testExtends()
     {
         $this->assertInstanceOf('SoapClient', $this->instance);
@@ -33,5 +27,11 @@ class ClientTest extends TestCase
     {
         $this->expectException(MalformedParametersException::class);
         $this->instance->doRunScript([]);
+    }
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->instance = new Client($this->wsdl());
     }
 }
