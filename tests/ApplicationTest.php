@@ -1,52 +1,54 @@
 <?php
 
-namespace IndesignClient;
+namespace InDesignClient\Tests;
 
-class ApplicationTest extends \PHPUnit_Framework_TestCase {
+use InDesignClient\Application;
+use InDesignClient\Client;
 
-    /** @var  \IndesignClient\Application $instance */
-    private $instance;
+class ApplicationTest extends TestCase
+{
+    /** @var Application $instance */
+    protected $instance;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
-        $client = new Client("http://192.168.9.129:12345/service?wsdl");
-        $this->instance = $client->getApplication();
+        $this->instance = new Application(new Client($this->wsdl()));
     }
 
     public function testGetAllFonts()
     {
         $fonts = $this->instance->getAllFonts();
-        $this->assertInternalType('array', $fonts);
+        $this->assertIsIterable($fonts);
         $this->assertGreaterThan(0, count($fonts));
     }
 
     public function testGetVersion()
     {
         $version = $this->instance->getVersion();
-        $this->assertInternalType('string', $version);
+        $this->assertIsString($version);
         $this->assertGreaterThan(0, strlen($version));
     }
 
     public function testGetName()
     {
         $name = $this->instance->getName();
-        $this->assertInternalType('string', $name);
+        $this->assertIsString($name);
         $this->assertGreaterThan(0, strlen($name));
     }
 
     public function testGetSerialNumber()
     {
         $serial = $this->instance->getSerialNumber();
-        $this->assertInternalType('string', $serial);
+        $this->assertIsString($serial);
         $this->assertGreaterThan(0, strlen($serial));
     }
 
     public function testSetUserName()
     {
-        $name = "foo".time();
-        $return  = $this->instance->setUserName($name);
-        $this->assertEquals(true, $return);
+        $name = "foo" . time();
+        $return = $this->instance->setUserName($name);
+        $this->assertTrue($return);
         $this->assertEquals($name, $this->instance->getUserName());
     }
 }

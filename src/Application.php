@@ -1,6 +1,6 @@
 <?php
 
-namespace IndesignClient;
+namespace InDesignClient;
 
 class Application {
 

@@ -1,4 +1,4 @@
-IndesignPHPClient
+InDesignClient
 =================
 
 Dependencies  must be installed using composer. In order to run unit test you need to have an indesign server instance runing

@@ -1,16 +1,15 @@
 <?php
 
-namespace IndesignClient;
-use IndesignClient\Exception\ApiCallException;
+namespace InDesignClient;
+
+use InDesignClient\Exception\ApiCallException;
 
 /**
  * Client
  *
- * @category   IndesignPHPClient
- * @package    IndesignClien
+ * @package    IndesignClient
  * @author     david ribes <ribes.david@gmail.com>
  */
-
 class Client extends \SoapClient {
 
     private $scriptLanguage = 'javascript';
@@ -18,7 +17,7 @@ class Client extends \SoapClient {
     private $port = '12345';
     private $ip = '127.0.0.1';
 
-    /** @var \IndesignClient\Application $application */
+    /** @var \InDesignClient\Application $application */
     private $application = null;
 
     function __construct($wsdl = 'http://127.0.0.1:12345/service?wsdl')
@@ -159,7 +158,7 @@ class Client extends \SoapClient {
     }
 
     /**
-     * @return \IndesignClient\Application
+     * @return \InDesignClient\Application
      */
     public function getApplication()
     {

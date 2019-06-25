@@ -1,6 +1,6 @@
 <?php
 
-namespace IndesignClient\Exception;
+namespace InDesignClient\Exception;
 
 use Exception;
 
